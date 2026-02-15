@@ -12,16 +12,12 @@ const { initializeSocket } = require('./config/socket.config');
 const connectionHandler = require('./handlers/connection.handler');
 const logger = require('./utils/logger');
 
-// Initialize Express app
 const app = express();
 
-// Create HTTP server
 const server = http.createServer(app);
 
-// Initialize Socket.IO
 const io = initializeSocket(server);
 
-// Configuration
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || 'localhost';
 
@@ -29,14 +25,12 @@ const HOST = process.env.HOST || 'localhost';
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Parse JSON bodies
 app.use(express.json());
 
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-// Main route - serves the chat interface
+// Main route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
@@ -50,7 +44,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API endpoint to get server stats (optional)
+
 app.get('/api/stats', (req, res) => {
   // Get all connected sockets
   const sockets = io.sockets.sockets;
@@ -62,8 +56,7 @@ app.get('/api/stats', (req, res) => {
   });
 });
 
-// Socket.IO Connection Handling
-// This is where all Socket.IO magic happens
+
 io.on('connection', (socket) => {
   // Delegate connection handling to connection handler
   connectionHandler(io, socket);
